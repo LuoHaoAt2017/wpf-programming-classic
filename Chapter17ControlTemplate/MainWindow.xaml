@@ -4,9 +4,25 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chapter17ControlTemplate"
+        xmlns:Converter="clr-namespace:Chapter17ControlTemplate.Converter"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
+        <Converter:PriceToBackgroundConverter x:Key="PriceToBackground" />
+        <DataTemplate x:Key="DefaultTemplate">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                <TextBlock Text="{Binding Path=Brand}"></TextBlock>
+                <TextBlock Text="{Binding Path=Price}"></TextBlock>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="HighlightTemplate">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                <TextBlock Text="{Binding Path=Brand}"></TextBlock>
+                <TextBlock Text="{Binding Path=Price}"></TextBlock>
+            </StackPanel>
+        </DataTemplate>
         <DataTemplate x:Key="MobilePhoneDataTemplate" DataType="{x:Type local:MobilePhone}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -14,13 +30,52 @@
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding Path=Name, Mode=OneWay}" Grid.Column="0" FontWeight="Bold"></TextBlock>
+                <!--值转换器-->
+                <!--事件触发器只能进行相等性检测，值转换器可以进行任意逻辑检测-->
+                <Border 
+                    Margin="0,0,0,0" 
+                    BorderThickness="1" 
+                    BorderBrush="SteelBlue" 
+                    CornerRadius="4" 
+                    Background="{Binding Path=Price, Converter={StaticResource PriceToBackground}}">
+                    <TextBlock Text="{Binding Path=Name, Mode=OneWay}" Grid.Column="0"></TextBlock>
+                </Border>
                 <TextBlock Text="{Binding Path=Brand, Mode=OneWay}" Grid.Column="1"></TextBlock>
                 <TextBlock Text="{Binding Path=Price, Mode=OneWay}" Grid.Column="2"></TextBlock>
             </Grid>
+            <!--事件触发器-->
+            <!--触发器只能测试是否相等，不支持复杂的比较条件。-->
+            <!--只能修改模板中元素的单个属性-->
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Path=Brand}" Value="xiaomi">
+                    <Setter Property="ListBoxItem.Foreground" Value="Orange"></Setter>
+                    <Setter Property="ListBoxItem.Background" Value="Black"></Setter>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=Brand}" Value="samsung">
+                    <Setter Property="ListBoxItem.Foreground" Value="Blue"></Setter>
+                    <Setter Property="ListBoxItem.Background" Value="Gray"></Setter>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=Brand}" Value="apple">
+                    <Setter Property="ListBoxItem.Foreground" Value="Black"></Setter>
+                    <Setter Property="ListBoxItem.Background" Value="White"></Setter>
+                </DataTrigger>
+            </DataTemplate.Triggers>
         </DataTemplate>
     </Window.Resources>
     <Grid>
-        <ListBox Name="phoneList" ItemTemplate="{StaticResource MobilePhoneDataTemplate}"></ListBox>
+        <StackPanel>
+            <ListBox Name="phoneList" ItemTemplate="{StaticResource MobilePhoneDataTemplate}"></ListBox>
+            <ListBox Name="mobileList">
+                <ListBox.ItemTemplateSelector>
+                    <local:MyDataTemplateSelector 
+                    DefaultTemplate="{StaticResource DefaultTemplate}"
+                    HighlightTemplate="{StaticResource HighlightTemplate}"
+                    PropertyToEvaluate="Brand"
+                    PropertyValueToHighlight="xiaomi"
+                >
+                    </local:MyDataTemplateSelector>
+                </ListBox.ItemTemplateSelector>
+            </ListBox>
+        </StackPanel>
     </Grid>
 </Window>

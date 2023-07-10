@@ -32,6 +32,17 @@ namespace Chapter17ControlTemplate
 			binding.Path = new PropertyPath(".");
 			binding.Mode = BindingMode.OneWay;
 			this.phoneList.SetBinding(ListBox.ItemsSourceProperty, binding);
+
+			Binding binding2 = new Binding();
+			binding2.Source = new List<MobilePhone>()
+		{
+			new MobilePhone() { Name = "小米", Brand = "xiaomi", Price = 1240.0m },
+			new MobilePhone() { Name = "三星", Brand = "samsung", Price = 2800.0m },
+			new MobilePhone() { Name = "苹果", Brand = "apple", Price = 6500 }
+		};
+			binding2.Path = new PropertyPath(".");
+			binding2.Mode = BindingMode.OneWay;
+			this.mobileList.SetBinding(ListBox.ItemsSourceProperty, binding2);
 		}
 	}
 }
