@@ -23,7 +23,7 @@
                 <TextBlock Text="{Binding Path=Price}"></TextBlock>
             </StackPanel>
         </DataTemplate>
-        <DataTemplate x:Key="MobilePhoneDataTemplate" DataType="{x:Type local:MobilePhone}">
+        <DataTemplate x:Key="MobilePhoneDataTemplate1" DataType="{x:Type local:MobilePhone}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
@@ -61,21 +61,78 @@
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
+        <DataTemplate x:Key="MobilePhoneDataTemplate2" DataType="{x:Type local:MobilePhone}">
+            <Grid Margin="0" Background="White">
+                <Border 
+                    Margin="5" 
+                    BorderThickness="1" 
+                    BorderBrush="SteelBlue" 
+                    CornerRadius="4"
+                    Background="{Binding Path=Background, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}"
+                >
+                    <!--在子项中获取父项的背景色-->
+                    <Grid Margin="3" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="{Binding Path=Name}"></TextBlock>
+                        <TextBlock Grid.Row="1" Text="{Binding Path=Brand}"></TextBlock>
+                    </Grid>
+                </Border>
+            </Grid>
+        </DataTemplate>
     </Window.Resources>
-    <Grid>
-        <StackPanel>
-            <ListBox Name="phoneList" ItemTemplate="{StaticResource MobilePhoneDataTemplate}"></ListBox>
-            <ListBox Name="mobileList">
-                <ListBox.ItemTemplateSelector>
-                    <local:MyDataTemplateSelector 
+    <StackPanel>
+        <ListBox Name="phoneList1" ItemTemplate="{StaticResource MobilePhoneDataTemplate1}"></ListBox>
+        <ListBox Name="phoneList2">
+            <ListBox.ItemTemplateSelector>
+                <local:MyDataTemplateSelector 
                     DefaultTemplate="{StaticResource DefaultTemplate}"
                     HighlightTemplate="{StaticResource HighlightTemplate}"
                     PropertyToEvaluate="Brand"
                     PropertyValueToHighlight="xiaomi"
                 >
-                    </local:MyDataTemplateSelector>
-                </ListBox.ItemTemplateSelector>
-            </ListBox>
-        </StackPanel>
-    </Grid>
+                </local:MyDataTemplateSelector>
+            </ListBox.ItemTemplateSelector>
+        </ListBox>
+        <ListBox Name="phoneList3" HorizontalContentAlignment="Stretch" ItemTemplate="{StaticResource MobilePhoneDataTemplate2}" SnapsToDevicePixels="True">
+            <ListBox.ItemContainerStyle>
+                <Style>
+                    <Setter Property="ItemsControl.Padding" Value="0"></Setter>
+                    <Style.Triggers>
+                        <Trigger Property="ListBoxItem.IsSelected" Value="True">
+                            <Setter Property="ListBoxItem.Background" Value="DarkRed"></Setter>
+                            <Setter Property="ListBoxItem.Foreground" Value="White"></Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+        <ListBox Name="phoneList4" HorizontalContentAlignment="Stretch">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid 
+                        Margin="3" 
+                        Background="{Binding Path=Background, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBoxItem}}">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                            <TextBlock Text="{Binding Path=Brand}"></TextBlock>
+                            <TextBlock Text="{Binding Path=Price}"></TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style>
+                    <Style.Triggers>
+                        <Trigger Property="ListBoxItem.IsSelected" Value="True">
+                            <Setter Property="ListBoxItem.Background" Value="DarkRed"></Setter>
+                            <Setter Property="ListBoxItem.Foreground" Value="White"></Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+    </StackPanel>
 </Window>
